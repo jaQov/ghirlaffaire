@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\CateoryRecourceResource\RelationManagers;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Product;
+use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Forms\Components\TextInput;
@@ -22,14 +21,13 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Section;
+use PhpParser\Node\Expr\Cast\String_;
 
-class ProductResource extends Resource
+class ProductsRelationManager extends RelationManager
 {
-    protected static ?string $model = Product::class;
+    protected static string $relationship = 'products';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form->schema([
 
@@ -40,35 +38,16 @@ class ProductResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull()
-                        ->live(onBlur:true)
-                        ->afterStateUpdated(function (?string $operation, ?string $state, Set $set) {
-                            $set('slug', Str::slug($state));
-                        }),
+                        ->live(onBlur: true),
 
 
                     TextInput::make('price')
-                        ->suffix(' DZD')
                         ->numeric()
                         ->required(),
 
                     TextInput::make('compare_at_price')
-                        ->suffix(' DZD')
                         ->numeric()
                         ->nullable(),
-
-                    select::make('categories')
-                        ->multiple()
-                        ->relationship('categories', 'name') // Many-to-many relationship
-                        ->preload() // (Optional) Loads all categories immediately for better UX
-                        ->searchable() // Enables searching inside the dropdown
-                        ->createOptionForm([
-                            TextInput::make('name')->required(), // Allow creating a new category from here
-                            FileUpload::make('image_url')
-                                ->label('Collection Image')
-                                ->image()
-                                ->directory('categories'),
-                        ]),
-
 
                     TextInput::make('inventory')
                         ->numeric()
@@ -116,7 +95,7 @@ class ProductResource extends Resource
         ])->columns(3);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -132,7 +111,7 @@ class ProductResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('price')
-                    ->suffix(' DZD')
+                ->suffix(' DZD')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
@@ -141,13 +120,6 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
-
-                TextColumn::make('categories.name') // Use plural 'categories'
-                    ->badge() // Displays categories as separate badge
-                    ->label('Category')
-                    ->toggleable()
-                    ->searchable(),
-
 
                 ToggleColumn::make('status')
                     ->sortable()
@@ -159,33 +131,27 @@ class ProductResource extends Resource
 
             ])
 
+
+
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\AttachAction::make()
+                    ->preloadRecordSelect()
+                    ->recordTitleAttribute('title')
+                    ->multiple()
+                    ->attachAnother(false),
+            ])
+
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
-        ];
     }
 }

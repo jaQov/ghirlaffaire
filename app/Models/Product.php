@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -24,28 +24,10 @@ class Product extends Model
     ];
 
 
-    protected static function boot()
+    public function categories(): BelongsToMany
     {
-        parent::boot();
-
-        static::creating(function ($product) {
-            if (empty($product->slug)) {
-                $product->slug = Str::slug($product->title);
-            }
-        });
-
-        static::updating(function ($product) {
-            if (empty($product->slug)) {
-                $product->slug = Str::slug($product->title);
-            }
-        });
+        return $this->belongsToMany(Category::class, 'product_category');
     }
-
-
-
-
-
-
 
 
 
