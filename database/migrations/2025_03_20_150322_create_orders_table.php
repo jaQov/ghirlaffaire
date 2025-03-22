@@ -23,6 +23,8 @@ return new class extends Migration {
 
             $table->integer('quantity')->default(1); // Quantity of product
             $table->enum('delivery_method', ['Door', 'StopDesk']); // Delivery method
+            $table->enum('Status', ['Pending', 'Confirmed', 'Canceled', 'Delivered'])->nullable();
+            $table->integer('total_price'); // Total price
             $table->timestamps(); // Created at & Updated at
         });
     }

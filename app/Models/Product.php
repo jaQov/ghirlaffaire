@@ -35,6 +35,15 @@ class Product extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function scopeActive($query)
+    {
+        $query->where('status', true);
+    }
+    public function scopeFeatured($query)
+    {
+        $query->where('featured', true);
+    }
+
 
 
     protected $casts = [

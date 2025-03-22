@@ -93,8 +93,7 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('created_at')
-                    ,
+                TextColumn::make('created_at'),
 
                 TextColumn::make('id')
                     ->sortable(),
@@ -102,6 +101,8 @@ class OrderResource extends Resource
                 TextColumn::make('client.name')
                     ->label('Client')
                     ->searchable(),
+
+                TextColumn::make('client.phone')->searchable(),
 
                 TextColumn::make('product.title')
                     ->label('Product')

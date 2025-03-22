@@ -41,4 +41,26 @@ class Order extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            // Calculate total price based on product price and quantity
+            $order->total_price = $order->product->price * $order->quantity;
+        });
+
+        static::created(function ($order) {
+            // Update client statistics after order creation
+            $order->client->updateClientStats();
+        });
+
+        static::deleted(function ($order) {
+            // Update client stats if an order is deleted
+            $order->client->updateClientStats();
+        });
+    }
 }

@@ -31,4 +31,12 @@ class Client extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function updateClientStats()
+    {
+        $this->update([
+            'amount_spent' => $this->orders()->sum('total_price'),
+            'total_orders' => $this->orders()->count(),
+        ]);
+    }
 }
