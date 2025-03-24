@@ -9,9 +9,12 @@ use App\Models\Delivery;
 use App\Models\DeliveryCompany;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Illuminate\Support\Str;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -36,7 +39,23 @@ class DeliveryResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->columnSpanFull()
-                    
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (?string $operation, ?string $state, Set $set) {
+                        $set('slug', Str::slug($state));
+                    }),
+
+                FileUpload::make('image_url')
+                    ->label('Image')
+                    ->image()
+                    ->nullable()
+                    ->directory('delivery'),
+
+                TextInput::make('slug')
+                    ->label('Custom Slug')
+                    ->helperText('Leave empty to auto-generate from title')
+                    ->unique(ignoreRecord: true)
+                    ->required(),
+
             ]);
     }
 
@@ -49,7 +68,7 @@ class DeliveryResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
-                //
+
             ])
             ->filters([
                 //

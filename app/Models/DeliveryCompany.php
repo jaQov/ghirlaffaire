@@ -15,7 +15,9 @@ class DeliveryCompany extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'name', // Add other company-related fields here
+        'name',
+        'image_url',
+        'slug',
     ];
 
 

@@ -12,16 +12,14 @@ class HomeController extends Controller
         $featuredProducts = Product::where('status', 1)
             ->where('featured', 1)
             ->latest()
-            ->take(10)
             ->get();
 
         $onSaleProducts = Product::where('status', 1)
             ->where('featured', 0)
             ->whereNotNull('compare_at_price') // Check if compare_at_price is not null
             ->latest()
-            ->take(10)
             ->get();
 
-        return view('home', compact('featuredProducts', 'onSaleProducts'));
+        return view('pages.home', compact('featuredProducts', 'onSaleProducts'));
     }
 }

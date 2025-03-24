@@ -5,19 +5,21 @@
     <div class="swiper featured-products-swiper">
         <div class="swiper-wrapper">
             @foreach ($featuredProducts as $product)
-            <div class="swiper-slide">
+            <div class="swiper-slide flex flex-col h-auto">
                 <x-product-card :product="$product" />
             </div>
             @endforeach
         </div>
-
-        <!-- Navigation Buttons -->
-        <div class="swiper-button-next text-green-600"></div>
-        <div class="swiper-button-prev text-green-600"></div>
-
-        <!-- Pagination -->
-        <div class="swiper-pagination"></div>
     </div>
+
+
+    <!-- Navigation Buttons -->
+    <div class="swiper-button-next text-green-600"></div>
+    <div class="swiper-button-prev text-green-600"></div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+</div>
 </div>
 
 <!-- Swiper Initialization Script -->
@@ -36,9 +38,9 @@
                 clickable: true,
             },
             breakpoints: {
-                640: { slidesPerView: 2 }, // Tablets
-                1024: { slidesPerView: 3 }, // Desktops
-                1280: { slidesPerView: 4 }, // Large screens
+                640: { slidesPerView: 2 }, // mobile
+                768: { slidesPerView: 3 }, // tablet
+                1024: { slidesPerView: 4 }, // desktop
             },
         });
     });

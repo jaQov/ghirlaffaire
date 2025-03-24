@@ -18,9 +18,9 @@
         <div class="mt-2 mb-5 flex items-center justify-between">
             <p>
                 <span class="text-3xl font-bold text-slate-900">{{ $product->price }}</span>
-                <span class="text-xl font-bold text-slate-900 relative ">DZD</span>
+                <span class="text-xl font-bold text-slate-900 relative ">DA</span>
                 @if($product->compare_at_price)
-                <span class="text-sm text-slate-900 line-through">${{ $product->compare_at_price }}</span>
+                <span class="text-sm text-slate-900 line-through">{{ $product->compare_at_price }}DA</span>
                 @endif
             </p>
             <div class="flex items-center">
