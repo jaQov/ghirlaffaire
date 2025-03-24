@@ -24,6 +24,14 @@ class Product extends Model
         'tags',
     ];
 
+    // Helper method to calculate the discount percentage
+    public function calculateDiscount(): int
+    {
+        if ($this->compare_at_price && $this->compare_at_price > $this->price) {
+            return round((($this->compare_at_price - $this->price) / $this->compare_at_price) * 100);
+        }
+        return 0;
+    }
 
     public function categories(): BelongsToMany
     {

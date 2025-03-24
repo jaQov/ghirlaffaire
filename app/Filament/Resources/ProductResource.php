@@ -22,6 +22,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\CheckboxColumn;
 
 class ProductResource extends Resource
 {
@@ -40,7 +41,7 @@ class ProductResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull()
-                        ->live(onBlur:true)
+                        ->live(onBlur: true)
                         ->afterStateUpdated(function (?string $operation, ?string $state, Set $set) {
                             $set('slug', Str::slug($state));
                         }),
@@ -156,6 +157,11 @@ class ProductResource extends Resource
                     ->label('Active')
                     ->onIcon('heroicon-o-check')
                     ->offIcon('heroicon-o-x-mark'),
+
+                CheckboxColumn::make('featured')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
 
             ])
 
