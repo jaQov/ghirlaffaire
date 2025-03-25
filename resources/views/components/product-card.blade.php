@@ -2,7 +2,8 @@
 
 <div
     class="relative m-10 flex w-full h-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
-    <a class="relative mx-3 mt-3 flex h-70 overflow-hidden rounded-xl" href="#">
+    <a class="relative mx-3 mt-3 flex h-70 overflow-hidden rounded-xl"
+        href="{{ route('products.show', $product->slug) }}">
         <img class="object-fit w-full h-full max-w-xs" src="{{ asset('storage/' . $product->image_url) }}"
             alt="{{ $product->title }}">
         @if($product->compare_at_price)
@@ -12,7 +13,7 @@
         @endif
     </a>
     <div class="mt-4 px-5 pb-5">
-        <a href="#">
+        <a href="{{ route('products.show', $product->slug) }}">
             <h5 class="text-xl tracking-tight text-slate-900">{{ $product->title }}</h5>
         </a>
         <div class="mt-2 mb-5 flex items-center justify-between">
@@ -41,7 +42,7 @@
                         class="mr-2 ml-3 rounded bg-yellow-300 px-2.5 py-0.5 text-xs font-semibold text-slate-900">4.5</span>
             </div>
         </div>
-        <a href="#"
+        <a href="{{ route('products.show', $product->slug) }}"
             class="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" stroke-width="2">

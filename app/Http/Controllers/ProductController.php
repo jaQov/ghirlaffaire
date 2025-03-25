@@ -4,18 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Wilaya;
 
 class ProductController extends Controller
 {
     /**
      * Show the product details page.
      */
-    public function show($id)
+    public function show($slug)
     {
-        // Retrieve the product by ID
-        $product = Product::findOrFail($id);
+        // Retrieve product by slug
+        $product = Product::where('slug', $slug)->firstOrFail();
 
-        // Return the product details view with the product data
-        return view('products.details', compact('product'));
+        // Retrieve all Wilayas with their related Communes
+        $wilayas = Wilaya::with('communes')->get();
+
+        return view('pages.product-details', compact('product', 'wilayas'));
     }
 }
