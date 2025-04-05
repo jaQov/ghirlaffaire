@@ -22,6 +22,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\CheckboxColumn;
 
 class ProductResource extends Resource
 {
@@ -40,7 +41,7 @@ class ProductResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull()
-                        ->live(onBlur:true)
+                        ->live(onBlur: true)
                         ->afterStateUpdated(function (?string $operation, ?string $state, Set $set) {
                             $set('slug', Str::slug($state));
                         }),
@@ -124,30 +125,41 @@ class ProductResource extends Resource
                 ImageColumn::make('image_url')
                     ->sortable()
                     ->toggleable()
-                    ->searchable(),
+                    ->searchable()
+                    ->alignment('center'),
 
                 TextColumn::make('title')
                     ->sortable()
                     ->toggleable()
-                    ->searchable(),
+                    ->searchable()
+                    ->alignment('center'),
 
                 TextColumn::make('price')
                     ->suffix(' DZD')
                     ->sortable()
                     ->toggleable()
-                    ->searchable(),
+                    ->searchable()
+                    ->alignment('center'),
 
                 TextColumn::make('inventory')
                     ->sortable()
                     ->toggleable()
-                    ->searchable(),
+                    ->searchable()
+                    ->alignment('center'),
 
                 TextColumn::make('categories.name') // Use plural 'categories'
                     ->badge() // Displays categories as separate badge
                     ->label('Category')
                     ->toggleable()
-                    ->searchable(),
+                    ->searchable()
+                    ->alignment('center'),
 
+                CheckboxColumn::make('is_featured')
+                    ->label('Featured')
+                    ->toggleable()
+                    ->sortable()
+                    ->searchable()
+                    ->alignment('center'),
 
                 ToggleColumn::make('status')
                     ->sortable()
@@ -155,7 +167,8 @@ class ProductResource extends Resource
                     ->searchable()
                     ->label('Active')
                     ->onIcon('heroicon-o-check')
-                    ->offIcon('heroicon-o-x-mark'),
+                    ->offIcon('heroicon-o-x-mark')
+                    ->alignment('center'),
 
             ])
 

@@ -11,6 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextInputColumn;
 
 class ClientResource extends Resource
 {
@@ -44,19 +45,41 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('phone')->searchable(),
+                TextColumn::make('created_at')
+                    ->dateTime('d.m.y | H:i') // Format updated
+                    ->label('Created At')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('name')->searchable()
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('phone')->searchable()
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable(),
+
                 TextColumn::make('total_orders')
                     ->badge()
-                    ->colors(['success' => fn($state) => $state > 0]),
+                    ->colors([
+                        'success' => fn($state) => $state === 1, // Green for 1 order
+                        'primary' => fn($state) => $state >= 2 && $state <= 3, // Blue for 2-3 orders
+                        'warning' => fn($state) => $state >= 4, // Custom color (e.g., yellow) for 4+ orders
+                    ])
+                    ->sortable(),
 
                 TextColumn::make('amount_spent')
                     ->sortable()
-                    ->formatStateUsing(fn($state) => number_format($state, 2) . ' DZD'),
+                    ->formatStateUsing(fn($state) => $state . ' DZD'),
 
                 TextColumn::make('ip_address')->copyable(),
-                TextColumn::make('created_at')->dateTime(),
+
+                TextInputColumn::make('note')
+                    ->label('Note')
+                    ->placeholder('Add a note here')
+                    ->searchable()
+                    ->toggleable(),
             ])
             ->filters([])
             ->actions([

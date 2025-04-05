@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Support\ServiceProvider;
 use App\Models\DeliveryCompany;
-use App\Observers\DeliveryCompanyObserver;
+use App\Observers\DeliveryObserver;
+use App\Models\Order;
+use App\Observers\OrderObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        DeliveryCompany::observe(DeliveryCompanyObserver::class);
+        DeliveryCompany::observe(DeliveryObserver::class);
+        Order::observe(OrderObserver::class);
     }
 }

@@ -16,6 +16,8 @@ class DeliveryCompany extends Model
 
     protected $fillable = [
         'name', // Add other company-related fields here
+        'image_url',
+        'is_active',
     ];
 
 
@@ -24,4 +26,8 @@ class DeliveryCompany extends Model
     {
         return $this->hasMany(DeliveryPrice::class, 'company_id');
     }
+
+    protected $casts = [
+        'status' => 'boolean',
+    ];
 }

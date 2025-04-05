@@ -32,6 +32,10 @@ class DeliveryPricesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('stopdesk')
                     ->required()
                     ->maxLength(255),
+
+                Forms\Components\TextInput::make('delivery_price')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -63,6 +67,11 @@ class DeliveryPricesRelationManager extends RelationManager
                 TextInputColumn::make('stopdesk')
                     ->rules(['numeric'])
                     ->sortable(),
+
+                TextInputColumn::make('delivery_time')
+                    ->label('Delivery Time')
+                    ->sortable()
+                    ->searchable(),
 
             ])
             ->filters([

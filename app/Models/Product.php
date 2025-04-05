@@ -11,6 +11,17 @@ class Product extends Model
 {
     use HasFactory;
 
+ 
+
+    public function calculateDiscount()
+    {
+        if (!$this->compare_at_price || $this->compare_at_price <= $this->price) {
+            return null; // No discount
+        }
+
+        return round((($this->compare_at_price - $this->price) / $this->compare_at_price) * 100);
+    }
+
     protected $fillable = [
         'title',
         'slug',
@@ -24,7 +35,6 @@ class Product extends Model
         'tags',
     ];
 
-
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'product_category');
@@ -35,10 +45,23 @@ class Product extends Model
         return $this->hasMany(Order::class);
     }
 
-
-
     protected $casts = [
         'status' => 'boolean',
         'tags' => 'array',
     ];
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true)
+            ->where('status', '1')
+            ->latest();
+    }
+
+    public function scopeDiscounted($query)
+    {
+        return $query->whereNotNull('compare_at_price')
+            ->whereColumn('compare_at_price', '>', 'price')
+            ->where('status', '1')
+            ->latest();
+    }
 };

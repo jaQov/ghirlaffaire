@@ -54,7 +54,7 @@ class ClientsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id')->label('Client ID')
                     ->sortable(),
-                TextColumn::make('full_name')
+                TextColumn::make('name')
                     ->label('Full Name')
                     ->sortable(),
                 TextColumn::make('phone')

@@ -9,20 +9,36 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id(); // Primary key
+
+            // Foreign keys
             $table->foreignId('client_id')
                 ->constrained('clients')
-                ->cascadeOnDelete(); // Foreign key referencing `clients.id`
+                ->cascadeOnDelete();
 
             $table->foreignId('commune_id')
                 ->constrained('communes')
-                ->cascadeOnDelete(); // Foreign key referencing `communes.id`
+                ->cascadeOnDelete();
 
             $table->foreignId('product_id')
                 ->constrained('products')
-                ->cascadeOnDelete(); // Foreign key referencing `products.id`
+                ->cascadeOnDelete();
 
+            // Order details
             $table->integer('quantity')->default(1); // Quantity of product
-            $table->enum('delivery_method', ['Door', 'StopDesk']); // Delivery method
+
+            $table->integer('total_price'); // Total price (Product price + Delivery fee)
+
+            $table->string('ip_address'); // Storing client's IP address
+
+            // Delivery method
+            $table->enum('delivery_method', ['Door', 'StopDesk']);
+
+            $table->text('note')->nullable(); // Additional notes about the order
+
+            // Order status with default value
+            $table->enum('status', ['Pending', 'Confirmed', 'Canceled', 'Shipped', 'Delivered', 'Returned'])->nullable();
+
+
             $table->timestamps(); // Created at & Updated at
         });
     }

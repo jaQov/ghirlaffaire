@@ -16,10 +16,12 @@ class DeliveryPrice extends Model
     protected $keyType = 'int'; // Define the key type
 
     protected $fillable = [
+        'wilaya_code',
         'door',
         'stopdesk',
-        'wilaya_code',
-        'company_id'
+        'delivery_time',
+        'delivery_time',
+        'company_id',
 
     ];
 

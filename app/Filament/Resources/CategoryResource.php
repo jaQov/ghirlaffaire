@@ -17,6 +17,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -30,12 +32,22 @@ class CategoryResource extends Resource
             ->schema([
 
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (?string $operation, ?string $state, Set $set) {
+                        $set('slug', Str::slug($state));
+                    }),
 
                 FileUpload::make('image_url')
                     ->label('Images')
                     ->image()
                     ->directory('categories'),
+
+                TextInput::make('slug')
+                    ->label('Custom Slug')
+                    ->helperText('Leave empty to auto-generate from title')
+                    ->unique(ignoreRecord: true)
+                    ->required(),
             ]);
     }
 

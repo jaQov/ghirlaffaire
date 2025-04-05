@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->integer('compare_at_price')->nullable();
             $table->boolean('status')->default(true);
             $table->integer('inventory');
+            $table->boolean('is_featured')->default(false);
             $table->string('image_url');
             $table->string('slug')->unique();
             $table->json('tags')->nullable();

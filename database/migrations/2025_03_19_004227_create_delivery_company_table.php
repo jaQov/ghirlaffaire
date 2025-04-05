@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('delivery_companies', function (Blueprint $table) { // Pluralized table name (best practice)
             $table->unsignedInteger('id')->primary()->autoIncrement();
             $table->string('name')->unique();
+            $table->string('image_url')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

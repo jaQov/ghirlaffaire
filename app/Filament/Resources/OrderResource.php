@@ -17,6 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextInputColumn;
 
 class OrderResource extends Resource
 {
@@ -27,7 +30,7 @@ class OrderResource extends Resource
     {
         return $form->schema([
             // Select Wilaya
-            Select::make('wilaya_id')
+            Select::make('commune.wilaya.wilaya_code')
                 ->label('Wilaya')
                 ->options(Wilaya::pluck('wilaya_name_fr', 'wilaya_code'))
                 ->reactive() // Enables dynamic updates
@@ -94,38 +97,168 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('created_at')
-                    ,
+                    ->dateTime('d.m.y | H:i')
+                    ->label('Created At')
+                    ->sortable()
+                    ->toggleable()
+                    ->alignCenter(),
 
                 TextColumn::make('id')
-                    ->sortable(),
+                    ->label('Order ID')
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->formatStateUsing(fn($state) => '#C' . str_pad($state, 4, '0', STR_PAD_LEFT))
+                    ->alignCenter(),
 
                 TextColumn::make('client.name')
-                    ->label('Client')
-                    ->searchable(),
+                    ->label('Name')
+                    ->url(fn($record) => $record->client_id ? route('filament.admin.resources.clients.edit', ['record' => $record->client_id]) : null)
+                    ->openUrlInNewTab()
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
 
-                TextColumn::make('product.title')
-                    ->label('Product')
-                    ->searchable(),
+                TextColumn::make('client.phone')
+                    ->label('Phone')
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
+
+                TextColumn::make('commune.wilaya.wilaya_code')
+                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_code)
+                    ->label('Wilaya Code')
+                    ->sortable()
+                    ->toggleable()
+                    ->badge()
+                    ->searchable()
+                    ->alignCenter(),
+
+                TextColumn::make('commune.wilaya.wilaya_name_fr')
+                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_name_fr)
+                    ->label('Wilaya')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
 
                 TextColumn::make('commune.commune_name_fr')
                     ->label('Commune')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
+
+                TextColumn::make('product.title')
+                    ->label('Product')
+                    ->url(fn($record) => $record->product_id ? route('filament.admin.resources.products.edit', ['record' => $record->product_id]) : null)
+                    ->openUrlInNewTab()
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
 
                 TextColumn::make('quantity')
-                    ->sortable(),
+                    ->label('Quantity')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
 
-                BadgeColumn::make('delivery_method')
+                TextColumn::make('ip_address')
+                    ->label('IP Address')
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
+
+                TextInputColumn::make('note')
+                    ->label('Note')
+                    ->placeholder('Add a note here')
+                    ->searchable()
+                    ->toggleable()
+                    ->alignCenter(),
+
+                TextColumn::make('delivery_method')
+                    ->badge()
                     ->colors([
                         'success' => fn($state) => $state === 'Door',
                         'info' => fn($state) => $state === 'StopDesk',
-                    ]),
+                    ])
+                    ->alignCenter(),
 
+                TextColumn::make('product.price')
+                    ->label('Product Price')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->formatStateUsing(fn($state) => $state . ' DA')
+                    ->alignCenter(),
+
+                TextColumn::make('delivery_price')
+                    ->label('Delivery Price')
+                    ->formatStateUsing(fn($state) => $state . ' DA')
+                    ->sortable()
+                    ->getStateUsing(fn($record) => $record->calculateDeliveryPrice())
+                    ->alignCenter(),
+
+                TextColumn::make('total_price')
+                    ->label('Total Price')
+                    ->formatStateUsing(fn($state) => $state . ' DA')
+                    ->sortable()
+                    ->alignCenter(),
+
+                IconColumn::make('status_icon')
+                    ->label('')
+                    ->state(fn($record) => $record->status)
+                    ->icon(fn(string $state): string => match ($state) {
+                        'Pending'   => 'heroicon-o-clock',
+                        'Confirmed' => 'heroicon-o-check-circle',
+                        'Canceled'  => 'heroicon-o-x-circle',
+                        'Shipped'   => 'heroicon-o-truck',
+                        'Delivered' => 'heroicon-o-cube',
+                        'Returned'  => 'heroicon-o-arrow-uturn-left',
+                        default     => 'heroicon-o-question-mark-circle',
+                    })
+                    ->color(fn(string $state): string => match ($state) {
+                        'Pending'   => 'warning',
+                        'Confirmed' => 'success',
+                        'Canceled'  => 'danger',
+                        'Shipped'   => 'info',
+                        'Delivered' => 'success',
+                        'Returned'  => 'danger',
+                        default     => 'gray',
+                    })
+                    ->tooltip(fn(string $state): string => $state)
+                    ->toggleable()
+                    ->alignCenter(),
+
+                SelectColumn::make('status')
+                    ->label('Status')
+                    ->options([
+                        'Pending' => '⏳ Pending',
+                        'Confirmed' => '✅ Confirmed',
+                        'Canceled' => '❌ Canceled',
+                        'Shipped' => '🚚 Shipped',
+                        'Delivered' => '📬 Delivered',
+                        'Returned' => '↩️ Returned',
+                    ])
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable()
+                    ->alignCenter(),
             ])
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

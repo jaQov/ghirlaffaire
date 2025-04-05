@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id(); // Primary Key
             $table->string('name')->unique(); // Category Name (Unique)
             $table->string('image_url')->nullable();
+            $table->string('slug')->unique(); // Slug for SEO (Unique)
             $table->timestamps();
         });
     }

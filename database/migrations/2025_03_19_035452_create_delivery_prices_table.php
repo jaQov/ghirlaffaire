@@ -27,6 +27,7 @@ return new class extends Migration
             // Other Fields
             $table->integer('door')->default(0);
             $table->integer('stopdesk')->default(0);
+            $table->string('delivery_time')->default('24-48');
             $table->timestamps();
 
             // Set Composite Primary Key
