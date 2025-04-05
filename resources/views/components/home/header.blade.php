@@ -1,3 +1,5 @@
+<!-- resources/views/layouts/app.blade.php -->
+
 <header class="bg-white dark:bg-gray-800 shadow-md py-4">
     <div class="container mx-auto flex justify-between items-center px-4">
         <!-- Logo -->
@@ -17,5 +19,8 @@
                 Contact
             </a>
         </nav>
+
+        <!-- Dark Mode Toggle -->
+        @livewire('dark-mode-toggle')
     </div>
 </header>
