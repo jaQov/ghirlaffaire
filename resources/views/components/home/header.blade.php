@@ -15,7 +15,7 @@
             <a href="{{ route('delivery.index') }}" class="text-gray-700 dark:text-gray-200 hover:text-green-600">
                 Delivery Prices
             </a>
-            <a href="{{ route('contact.create') }}" class="text-gray-700 dark:text-gray-200 hover:text-green-600">
+            <a href="{{ route('contact') }}" class="text-gray-700 dark:text-gray-200 hover:text-green-600">
                 Contact
             </a>
         </nav>

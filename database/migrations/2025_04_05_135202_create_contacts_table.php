@@ -17,6 +17,7 @@ class CreateContactsTable extends Migration
             $table->string('email');       // Contact's email address
             $table->string('phone')->nullable(); // Contact's phone number (optional)
             $table->text('message');       // The message from the contact form
+            $table->boolean('status'); // Status of the contact (positive or negative)
             $table->timestamps();          // created_at and updated_at
         });
     }

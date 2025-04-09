@@ -40,7 +40,7 @@ class OrderResource extends Resource
             // Select Commune (filtered dynamically)
             Select::make('commune_id')
                 ->label('Commune')
-                ->options(fn(callable $get) => Commune::where('wilaya_code', $get('wilaya_id'))->pluck('commune_name_fr', 'id'))
+                ->options(fn(callable $get) => Commune::where('wilaya_code', $get('wilaya_id') ?? '')->pluck('commune_name_fr', 'id'))
                 ->reactive()
                 ->required(),
 
@@ -130,7 +130,7 @@ class OrderResource extends Resource
                     ->alignCenter(),
 
                 TextColumn::make('commune.wilaya.wilaya_code')
-                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_code)
+                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_code ?? '')
                     ->label('Wilaya Code')
                     ->sortable()
                     ->toggleable()
@@ -139,7 +139,7 @@ class OrderResource extends Resource
                     ->alignCenter(),
 
                 TextColumn::make('commune.wilaya.wilaya_name_fr')
-                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_name_fr)
+                    ->getStateUsing(fn($record) => $record->commune?->wilaya?->wilaya_name_fr ?? '')
                     ->label('Wilaya')
                     ->sortable()
                     ->toggleable()
@@ -202,9 +202,9 @@ class OrderResource extends Resource
 
                 TextColumn::make('delivery_price')
                     ->label('Delivery Price')
-                    ->formatStateUsing(fn($state) => $state . ' DA')
+                    ->formatStateUsing(fn($state) => $state ? $state . ' DA' : 'N/A')
                     ->sortable()
-                    ->getStateUsing(fn($record) => $record->calculateDeliveryPrice())
+                    ->getStateUsing(fn($record) => $record->calculateDeliveryPrice() ?? 0)
                     ->alignCenter(),
 
                 TextColumn::make('total_price')
@@ -215,8 +215,8 @@ class OrderResource extends Resource
 
                 IconColumn::make('status_icon')
                     ->label('')
-                    ->state(fn($record) => $record->status)
-                    ->icon(fn(string $state): string => match ($state) {
+                    ->state(fn($record) => $record->status ?? 'Unknown')
+                    ->icon(fn(?string $state): string => match ($state) {
                         'Pending'   => 'heroicon-o-clock',
                         'Confirmed' => 'heroicon-o-check-circle',
                         'Canceled'  => 'heroicon-o-x-circle',
@@ -225,7 +225,7 @@ class OrderResource extends Resource
                         'Returned'  => 'heroicon-o-arrow-uturn-left',
                         default     => 'heroicon-o-question-mark-circle',
                     })
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn(?string $state): string => match ($state) {
                         'Pending'   => 'warning',
                         'Confirmed' => 'success',
                         'Canceled'  => 'danger',
@@ -234,7 +234,7 @@ class OrderResource extends Resource
                         'Returned'  => 'danger',
                         default     => 'gray',
                     })
-                    ->tooltip(fn(string $state): string => $state)
+                    ->tooltip(fn(?string $state): string => $state ?? 'Unknown')
                     ->toggleable()
                     ->alignCenter(),
 

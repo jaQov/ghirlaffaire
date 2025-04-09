@@ -21,6 +21,4 @@ Route::get('/delivery', [DeliveryController::class, 'index'])->name('delivery.in
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 
-//contact
-Route::get('/contact', [ContactController::class, 'create'])->name('contact.create');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::view('/contact', 'pages.contact')->name('contact');

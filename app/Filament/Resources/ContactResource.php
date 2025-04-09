@@ -3,15 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
-use App\Filament\Resources\ContactResource\RelationManagers;
 use App\Models\Contact;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\DateRangeFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class ContactResource extends Resource
 {
@@ -21,74 +22,74 @@ class ContactResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                // Name field input
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Name'),
-                // Email field input
-                Forms\Components\TextInput::make('email')
-                    ->required()
-                    ->email()
-                    ->maxLength(255)
-                    ->label('Email'),
-                // Phone number input (optional)
-                Forms\Components\TextInput::make('phone')
-                    ->maxLength(20)
-                    ->label('Phone Number'),
-                // Message textarea input
-                Forms\Components\Textarea::make('message')
-                    ->required()
-                    ->label('Message'),
-            ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                // Display the contact's name
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
-                    ->searchable()
-                    ->sortable(),
-                // Display the contact's email
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->sortable(),
-                // Display the contact's phone number
-                Tables\Columns\TextColumn::make('phone')
-                    ->label('Phone Number')
-                    ->searchable(),
-                // Display a truncated version of the message
-                Tables\Columns\TextColumn::make('message')
-                    ->label('Message')
-                    ->limit(50),
-                // Display when the message was received
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime('M d, Y')
                     ->label('Received At')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('name')
+                    ->label('Name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('phone')
+                    ->label('Phone Number')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+
+                IconColumn::make('status')
+                    ->label('Feedback')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-face-smile')
+                    ->falseIcon('heroicon-o-face-frown')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('message')
+                    ->label('Message')
+                    ->limit(50)
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
             ])
             ->filters([
-                // You can add filters here if needed
+                SelectFilter::make('status')
+                    ->label('Feedback Type')
+                    ->options([
+                        1 => 'Positive',
+                        0 => 'Negative',
+                    ]),
+
             ])
             ->actions([
-                Tables\Actions\EditAction::make(), // Allow editing of contacts
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(), // Allow bulk deletion
-            ]);
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
